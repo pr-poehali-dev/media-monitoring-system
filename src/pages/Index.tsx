@@ -60,6 +60,96 @@ const Index = () => {
         reach: '28K',
       },
     ],
+    regionComparison: [
+      { region: 'Ваш регион', score: 72, positive: 58, neutral: 28, negative: 14, trend: 'up' },
+      { region: 'Московская область', score: 68, positive: 55, neutral: 30, negative: 15, trend: 'up' },
+      { region: 'Санкт-Петербург', score: 75, positive: 62, neutral: 25, negative: 13, trend: 'up' },
+      { region: 'Краснодарский край', score: 65, positive: 52, neutral: 32, negative: 16, trend: 'down' },
+      { region: 'Татарстан', score: 78, positive: 65, neutral: 24, negative: 11, trend: 'up' },
+    ],
+    influencers: [
+      { name: 'Иван Петров', platform: 'Telegram', followers: '245K', reach: '1.2M', sentiment: 'positive', activity: 87 },
+      { name: 'Мария Сидорова', platform: 'VK', followers: '189K', reach: '890K', sentiment: 'neutral', activity: 72 },
+      { name: 'Алексей Новиков', platform: 'Telegram', followers: '156K', reach: '780K', sentiment: 'negative', activity: 65 },
+      { name: 'Елена Смирнова', platform: 'VK', followers: '134K', reach: '650K', sentiment: 'positive', activity: 58 },
+    ],
+    geographyData: [
+      { city: 'Областной центр', mentions: 1245, sentiment: 'positive', lat: 55.75, lng: 37.61 },
+      { city: 'Северный район', mentions: 456, sentiment: 'neutral', lat: 56.33, lng: 37.52 },
+      { city: 'Южный район', mentions: 389, sentiment: 'negative', lat: 55.28, lng: 38.15 },
+      { city: 'Западный район', mentions: 312, sentiment: 'positive', lat: 55.68, lng: 36.89 },
+      { city: 'Восточный район', mentions: 245, sentiment: 'neutral', lat: 55.82, lng: 38.44 },
+    ],
+    wordCloud: [
+      { word: 'развитие', count: 342, sentiment: 'positive' },
+      { word: 'инфраструктура', count: 298, sentiment: 'neutral' },
+      { word: 'поддержка', count: 276, sentiment: 'positive' },
+      { word: 'проблема', count: 234, sentiment: 'negative' },
+      { word: 'строительство', count: 198, sentiment: 'neutral' },
+      { word: 'благоустройство', count: 187, sentiment: 'positive' },
+      { word: 'ремонт', count: 165, sentiment: 'neutral' },
+      { word: 'жалоба', count: 154, sentiment: 'negative' },
+      { word: 'образование', count: 143, sentiment: 'positive' },
+      { word: 'здравоохранение', count: 132, sentiment: 'neutral' },
+      { word: 'транспорт', count: 121, sentiment: 'neutral' },
+      { word: 'безопасность', count: 98, sentiment: 'positive' },
+    ],
+    trendForecast: [
+      { topic: 'Социальная поддержка', current: 456, forecast: 520, direction: 'up', probability: 78 },
+      { topic: 'ЖКХ', current: 287, forecast: 340, direction: 'up', probability: 85 },
+      { topic: 'Здравоохранение', current: 312, forecast: 295, direction: 'down', probability: 62 },
+      { topic: 'Инфраструктура', current: 389, forecast: 410, direction: 'up', probability: 71 },
+    ],
+    problemComments: [
+      {
+        id: 1,
+        author: 'Пользователь VK',
+        avatar: '👤',
+        platform: 'VK',
+        officialAccount: '@governor_region',
+        text: 'Третий месяц не могут отремонтировать дорогу! Когда уже наведут порядок?!',
+        topic: 'Дороги и ЖКХ',
+        likes: 234,
+        date: '2024-12-01',
+        sentiment: 'angry',
+      },
+      {
+        id: 2,
+        author: 'Житель города',
+        avatar: '👥',
+        platform: 'Telegram',
+        officialAccount: '@gov_official',
+        text: 'В поликлинике запись к врачу на месяц вперед. Это ненормально!',
+        topic: 'Здравоохранение',
+        likes: 189,
+        date: '2024-11-30',
+        sentiment: 'angry',
+      },
+      {
+        id: 3,
+        author: 'Анна М.',
+        avatar: '👩',
+        platform: 'VK',
+        officialAccount: '@mayor_city',
+        text: 'Обещали детский сад в нашем районе ещё год назад. Где результат??',
+        topic: 'Образование',
+        likes: 156,
+        date: '2024-11-30',
+        sentiment: 'angry',
+      },
+      {
+        id: 4,
+        author: 'Сергей П.',
+        avatar: '👨',
+        platform: 'Telegram',
+        officialAccount: '@governor_region',
+        text: 'Тарифы ЖКХ растут, а качество услуг падает. Кто за это ответит?',
+        topic: 'ЖКХ',
+        likes: 298,
+        date: '2024-11-29',
+        sentiment: 'angry',
+      },
+    ],
   };
 
   const getSentimentColor = (sentiment: string) => {
@@ -187,6 +277,18 @@ const Index = () => {
             <TabsTrigger value="sources" className="gap-2">
               <Icon name="Globe" size={16} />
               Источники
+            </TabsTrigger>
+            <TabsTrigger value="regions" className="gap-2">
+              <Icon name="Map" size={16} />
+              Регионы
+            </TabsTrigger>
+            <TabsTrigger value="influencers" className="gap-2">
+              <Icon name="Users" size={16} />
+              Авторы
+            </TabsTrigger>
+            <TabsTrigger value="problems" className="gap-2">
+              <Icon name="AlertCircle" size={16} />
+              Проблемы
             </TabsTrigger>
           </TabsList>
 
@@ -372,6 +474,310 @@ const Index = () => {
                 <p className="text-muted-foreground">Раздел в разработке</p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Regional Comparison */}
+          <TabsContent value="regions" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Сравнение регионов</CardTitle>
+                <CardDescription>Бенчмаркинг медийного имиджа субъектов РФ</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockData.regionComparison.map((region, index) => (
+                    <div key={index} className="p-4 rounded-lg border border-border hover:bg-accent/30 transition-colors">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                            index === 0 ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+                          } font-bold`}>
+                            {index + 1}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-base">{region.region}</h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs text-muted-foreground">Индекс имиджа:</span>
+                              <Badge variant={index === 0 ? 'default' : 'secondary'}>
+                                {region.score}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Icon 
+                            name={region.trend === 'up' ? 'TrendingUp' : 'TrendingDown'} 
+                            className={region.trend === 'up' ? 'text-success' : 'text-destructive'}
+                            size={20}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <div className="text-xs text-muted-foreground mb-1">Позитивные</div>
+                          <div className="flex items-center gap-2">
+                            <Progress value={region.positive} className="h-2" />
+                            <span className="text-sm font-medium text-success">{region.positive}%</span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground mb-1">Нейтральные</div>
+                          <div className="flex items-center gap-2">
+                            <Progress value={region.neutral} className="h-2 [&>div]:bg-muted-foreground" />
+                            <span className="text-sm font-medium text-muted-foreground">{region.neutral}%</span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground mb-1">Негативные</div>
+                          <div className="flex items-center gap-2">
+                            <Progress value={region.negative} className="h-2 [&>div]:bg-destructive" />
+                            <span className="text-sm font-medium text-destructive">{region.negative}%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Geography & Word Cloud */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Карта упоминаний</CardTitle>
+                  <CardDescription>Географическое распределение публикаций</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {mockData.geographyData.map((location, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/30 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <Icon name="MapPin" className="text-primary" size={18} />
+                          <div>
+                            <p className="font-medium text-sm">{location.city}</p>
+                            <p className="text-xs text-muted-foreground">{location.mentions} упоминаний</p>
+                          </div>
+                        </div>
+                        <Badge className={getSentimentColor(location.sentiment)} variant="outline">
+                          {getSentimentLabel(location.sentiment)}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Облако тегов</CardTitle>
+                  <CardDescription>Ключевые слова в медиаполе</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {mockData.wordCloud.map((word, index) => {
+                      const size = Math.max(12, Math.min(24, word.count / 20));
+                      return (
+                        <Badge
+                          key={index}
+                          className={`${getSentimentColor(word.sentiment)} cursor-pointer hover:scale-110 transition-transform`}
+                          style={{ fontSize: `${size}px`, padding: `${size / 3}px ${size / 2}px` }}
+                        >
+                          {word.word} <span className="text-xs opacity-70 ml-1">{word.count}</span>
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Trend Forecast */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Прогнозирование трендов</CardTitle>
+                <CardDescription>Предсказание развития тем в медиаполе</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockData.trendForecast.map((trend, index) => (
+                    <div key={index} className="p-4 rounded-lg border border-border">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold">{trend.topic}</h4>
+                        <Badge variant={trend.direction === 'up' ? 'default' : 'secondary'}>
+                          <Icon 
+                            name={trend.direction === 'up' ? 'TrendingUp' : 'TrendingDown'} 
+                            size={14} 
+                            className="mr-1"
+                          />
+                          {trend.probability}% вероятность
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-6">
+                        <div className="flex-1">
+                          <div className="flex items-baseline gap-2 mb-2">
+                            <span className="text-sm text-muted-foreground">Сейчас:</span>
+                            <span className="text-2xl font-bold">{trend.current}</span>
+                          </div>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-sm text-muted-foreground">Прогноз:</span>
+                            <span className={`text-2xl font-bold ${
+                              trend.direction === 'up' ? 'text-warning' : 'text-muted-foreground'
+                            }`}>{trend.forecast}</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-3xl font-bold ${
+                            trend.direction === 'up' ? 'text-warning' : 'text-muted-foreground'
+                          }`}>
+                            {trend.direction === 'up' ? '+' : ''}{trend.forecast - trend.current}
+                          </div>
+                          <div className="text-xs text-muted-foreground">через месяц</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Influencers */}
+          <TabsContent value="influencers" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Влиятельные авторы</CardTitle>
+                <CardDescription>Кто формирует повестку в медиаполе региона</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockData.influencers.map((influencer, index) => (
+                    <div key={index} className="p-4 rounded-lg border border-border hover:bg-accent/30 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-4 flex-1">
+                          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold text-lg">
+                            {index + 1}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-semibold text-base">{influencer.name}</h4>
+                              <Badge variant="outline" className="text-xs">
+                                {influencer.platform}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                              <span className="flex items-center gap-1">
+                                <Icon name="Users" size={14} />
+                                {influencer.followers}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Icon name="Eye" size={14} />
+                                {influencer.reach}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1">
+                                <div className="text-xs text-muted-foreground mb-1">Активность</div>
+                                <Progress value={influencer.activity} className="h-2" />
+                              </div>
+                              <Badge className={getSentimentColor(influencer.sentiment)}>
+                                {getSentimentLabel(influencer.sentiment)}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Problem Comments */}
+          <TabsContent value="problems" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Проблемные вопросы</CardTitle>
+                <CardDescription>Негативные комментарии в соцсетях официальных аккаунтов властей</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockData.problemComments.map((comment) => (
+                    <div key={comment.id} className="p-4 rounded-lg border-2 border-destructive/20 bg-destructive/5 hover:bg-destructive/10 transition-colors">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="text-3xl">{comment.avatar}</div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold text-sm">{comment.author}</span>
+                            <Badge variant="outline" className="text-xs">{comment.platform}</Badge>
+                            <Icon name="ArrowRight" size={12} className="text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">{comment.officialAccount}</span>
+                          </div>
+                          <p className="text-sm text-foreground mb-3 leading-relaxed">{comment.text}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <Badge variant="destructive" className="text-xs">
+                                <Icon name="Flame" size={12} className="mr-1" />
+                                Гневный
+                              </Badge>
+                              <span className="flex items-center gap-1">
+                                <Icon name="ThumbsUp" size={12} />
+                                {comment.likes}
+                              </span>
+                              <span>{comment.date}</span>
+                            </div>
+                            <Badge variant="outline">{comment.topic}</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Problem Statistics */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Всего проблемных комментариев</CardDescription>
+                  <CardTitle className="text-3xl font-bold text-destructive">437</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-destructive text-sm font-medium">
+                    <Icon name="TrendingUp" size={16} />
+                    <span>+23% за неделю</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Требуют реакции</CardDescription>
+                  <CardTitle className="text-3xl font-bold text-warning">87</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-warning text-sm font-medium">
+                    <Icon name="AlertTriangle" size={16} />
+                    <span>Высокая активность</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Средний охват негатива</CardDescription>
+                  <CardTitle className="text-3xl font-bold">12.4K</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm font-medium">
+                    <Icon name="Users" size={16} />
+                    <span>на комментарий</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
