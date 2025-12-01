@@ -16,6 +16,8 @@ import {
 const Index = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
 
+  const [realtimeEnabled, setRealtimeEnabled] = useState(true);
+
   const mockData = {
     totalMentions: 2847,
     positivePercent: 58,
@@ -148,6 +150,128 @@ const Index = () => {
         likes: 298,
         date: '2024-11-29',
         sentiment: 'angry',
+      },
+    ],
+    analyticsData: {
+      hourlyActivity: [
+        { hour: '00:00', mentions: 45 },
+        { hour: '03:00', mentions: 23 },
+        { hour: '06:00', mentions: 67 },
+        { hour: '09:00', mentions: 234 },
+        { hour: '12:00', mentions: 456 },
+        { hour: '15:00', mentions: 389 },
+        { hour: '18:00', mentions: 512 },
+        { hour: '21:00', mentions: 298 },
+      ],
+      topAuthors: [
+        { name: 'Александр Кузнецов', publications: 45, reach: '234K', sentiment: 'positive' },
+        { name: 'Екатерина Волкова', publications: 38, reach: '189K', sentiment: 'neutral' },
+        { name: 'Дмитрий Орлов', publications: 32, reach: '156K', sentiment: 'negative' },
+        { name: 'Ольга Зайцева', publications: 28, reach: '142K', sentiment: 'positive' },
+      ],
+      mediaTypes: [
+        { type: 'Текст', count: 1456, percent: 51 },
+        { type: 'Фото', count: 892, percent: 31 },
+        { type: 'Видео', count: 356, percent: 13 },
+        { type: 'Инфографика', count: 143, percent: 5 },
+      ],
+    },
+    liveStream: [
+      {
+        id: 1,
+        timestamp: '14:23',
+        source: 'Telegram',
+        title: 'Новый проект благоустройства запущен',
+        sentiment: 'positive',
+        reach: 12400,
+      },
+      {
+        id: 2,
+        timestamp: '14:18',
+        source: 'VK',
+        title: 'Жители обсуждают повышение тарифов',
+        sentiment: 'negative',
+        reach: 8900,
+      },
+      {
+        id: 3,
+        timestamp: '14:12',
+        source: 'Региональные СМИ',
+        title: 'Открытие нового спортивного комплекса',
+        sentiment: 'positive',
+        reach: 15600,
+      },
+      {
+        id: 4,
+        timestamp: '14:05',
+        source: 'Telegram',
+        title: 'Губернатор прокомментировал ситуацию',
+        sentiment: 'neutral',
+        reach: 23400,
+      },
+      {
+        id: 5,
+        timestamp: '13:58',
+        source: 'VK',
+        title: 'Жалобы на работу общественного транспорта',
+        sentiment: 'negative',
+        reach: 6700,
+      },
+    ],
+    monitoredSources: [
+      { 
+        id: 1,
+        name: 'РИА Новости',
+        type: 'Федеральные СМИ',
+        url: 'ria.ru',
+        status: 'active',
+        lastUpdate: '2 мин назад',
+        todayMentions: 45,
+      },
+      {
+        id: 2,
+        name: 'Региональные вести',
+        type: 'Региональные СМИ',
+        url: 'region-news.ru',
+        status: 'active',
+        lastUpdate: '5 мин назад',
+        todayMentions: 123,
+      },
+      {
+        id: 3,
+        name: '@governor_region',
+        type: 'Telegram',
+        url: 't.me/governor_region',
+        status: 'active',
+        lastUpdate: '1 мин назад',
+        todayMentions: 89,
+      },
+      {
+        id: 4,
+        name: 'Губернатор региона',
+        type: 'VK',
+        url: 'vk.com/governor',
+        status: 'active',
+        lastUpdate: '8 мин назад',
+        todayMentions: 67,
+      },
+      {
+        id: 5,
+        name: 'Городской портал',
+        type: 'Интернет-издание',
+        url: 'city-portal.ru',
+        status: 'warning',
+        lastUpdate: '45 мин назад',
+        todayMentions: 34,
+      },
+      {
+        id: 6,
+        name: 'Местные новости',
+        type: 'Региональные СМИ',
+        url: 'local-news.ru',
+        status: 'error',
+        lastUpdate: '3 ч назад',
+        todayMentions: 0,
       },
     ],
   };
@@ -440,40 +564,402 @@ const Index = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="analytics">
+          <TabsContent value="analytics" className="space-y-6">
+            {/* Hourly Activity */}
             <Card>
               <CardHeader>
-                <CardTitle>Аналитические отчеты</CardTitle>
-                <CardDescription>Подробный анализ медийного поля</CardDescription>
+                <CardTitle>Активность по часам</CardTitle>
+                <CardDescription>Распределение упоминаний в течение суток</CardDescription>
               </CardHeader>
-              <CardContent className="flex items-center justify-center h-64">
-                <p className="text-muted-foreground">Раздел в разработке</p>
+              <CardContent>
+                <div className="h-[300px] flex items-end justify-between gap-3">
+                  {mockData.analyticsData.hourlyActivity.map((item, index) => {
+                    const maxValue = Math.max(...mockData.analyticsData.hourlyActivity.map(i => i.mentions));
+                    const height = (item.mentions / maxValue) * 250;
+                    return (
+                      <div key={index} className="flex-1 flex flex-col items-center gap-2">
+                        <div className="relative w-full group">
+                          <div
+                            className="w-full bg-primary rounded-t hover:bg-primary/80 transition-colors cursor-pointer"
+                            style={{ height: `${height}px` }}
+                          />
+                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground text-background px-2 py-1 rounded text-xs whitespace-nowrap">
+                            {item.mentions}
+                          </div>
+                        </div>
+                        <span className="text-xs text-muted-foreground font-medium">{item.hour}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Top Authors & Media Types */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Топ авторов</CardTitle>
+                  <CardDescription>Самые активные журналисты</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {mockData.analyticsData.topAuthors.map((author, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/30 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">{author.name}</p>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                              <span>{author.publications} публикаций</span>
+                              <span className="flex items-center gap-1">
+                                <Icon name="Eye" size={10} />
+                                {author.reach}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <Badge className={getSentimentColor(author.sentiment)}>
+                          {getSentimentLabel(author.sentiment)}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Типы контента</CardTitle>
+                  <CardDescription>Распределение по форматам</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {mockData.analyticsData.mediaTypes.map((type, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Icon 
+                              name={
+                                type.type === 'Текст' ? 'FileText' :
+                                type.type === 'Фото' ? 'Image' :
+                                type.type === 'Видео' ? 'Video' :
+                                'BarChart'
+                              }
+                              size={16}
+                              className="text-primary"
+                            />
+                            <span className="font-medium text-sm">{type.type}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-muted-foreground">{type.count}</span>
+                            <Badge variant="outline">{type.percent}%</Badge>
+                          </div>
+                        </div>
+                        <Progress value={type.percent} className="h-2" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sentiment Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Детальная тональность</CardTitle>
+                <CardDescription>Анализ настроений по источникам</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {mockData.sources.map((source, index) => (
+                    <div key={index} className="p-4 rounded-lg border border-border">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-semibold">{source.name}</h4>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">{source.count} упоминаний</span>
+                          <Badge variant={source.change.startsWith('+') ? 'default' : 'secondary'}>
+                            {source.change}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-muted-foreground">Позитив</span>
+                            <span className="font-medium text-success">62%</span>
+                          </div>
+                          <Progress value={62} className="h-1.5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-muted-foreground">Нейтрал</span>
+                            <span className="font-medium text-muted-foreground">26%</span>
+                          </div>
+                          <Progress value={26} className="h-1.5 [&>div]:bg-muted-foreground" />
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-muted-foreground">Негатив</span>
+                            <span className="font-medium text-destructive">12%</span>
+                          </div>
+                          <Progress value={12} className="h-1.5 [&>div]:bg-destructive" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="monitoring">
+          <TabsContent value="monitoring" className="space-y-6">
+            {/* Monitoring Controls */}
             <Card>
               <CardHeader>
-                <CardTitle>Реал-тайм мониторинг</CardTitle>
-                <CardDescription>Отслеживание публикаций в режиме реального времени</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Реал-тайм мониторинг</CardTitle>
+                    <CardDescription>Отслеживание публикаций в режиме реального времени</CardDescription>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${
+                        realtimeEnabled ? 'bg-success animate-pulse' : 'bg-muted-foreground'
+                      }`} />
+                      <span className="text-sm text-muted-foreground">
+                        {realtimeEnabled ? 'Активно' : 'Приостановлено'}
+                      </span>
+                    </div>
+                    <Button 
+                      variant={realtimeEnabled ? 'destructive' : 'default'}
+                      size="sm"
+                      onClick={() => setRealtimeEnabled(!realtimeEnabled)}
+                    >
+                      <Icon name={realtimeEnabled ? 'Pause' : 'Play'} size={14} className="mr-2" />
+                      {realtimeEnabled ? 'Приостановить' : 'Запустить'}
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="flex items-center justify-center h-64">
-                <p className="text-muted-foreground">Раздел в разработке</p>
+              <CardContent>
+                <div className="space-y-3">
+                  {mockData.liveStream.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className="p-4 rounded-lg border border-border hover:bg-accent/30 transition-all animate-fade-in"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Badge variant="outline" className="text-xs">
+                              {item.timestamp}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              {item.source}
+                            </Badge>
+                            <Badge className={getSentimentColor(item.sentiment)}>
+                              {getSentimentLabel(item.sentiment)}
+                            </Badge>
+                          </div>
+                          <h4 className="font-medium text-sm mb-2">{item.title}</h4>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Icon name="Eye" size={12} />
+                              {item.reach.toLocaleString()} просмотров
+                            </span>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm">
+                          <Icon name="ExternalLink" size={14} />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
+
+            {/* Real-time Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Упоминаний за час</CardDescription>
+                  <CardTitle className="text-3xl font-bold">127</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-success text-sm font-medium">
+                    <Icon name="TrendingUp" size={16} />
+                    <span>+18% к прошлому часу</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Позитивных сейчас</CardDescription>
+                  <CardTitle className="text-3xl font-bold text-success">74</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Progress value={58} className="h-2" />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Негативных сейчас</CardDescription>
+                  <CardTitle className="text-3xl font-bold text-destructive">18</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Progress value={14} className="h-2 [&>div]:bg-destructive" />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Средний охват</CardDescription>
+                  <CardTitle className="text-3xl font-bold">14.2K</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm font-medium">
+                    <Icon name="Users" size={16} />
+                    <span>на публикацию</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
-          <TabsContent value="sources">
+          <TabsContent value="sources" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Управление источниками</CardTitle>
-                <CardDescription>Настройка источников мониторинга</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Управление источниками</CardTitle>
+                    <CardDescription>Настройка и мониторинг источников данных</CardDescription>
+                  </div>
+                  <Button>
+                    <Icon name="Plus" size={16} className="mr-2" />
+                    Добавить источник
+                  </Button>
+                </div>
               </CardHeader>
-              <CardContent className="flex items-center justify-center h-64">
-                <p className="text-muted-foreground">Раздел в разработке</p>
+              <CardContent>
+                <div className="space-y-3">
+                  {mockData.monitoredSources.map((source) => {
+                    const getStatusColor = (status: string) => {
+                      switch (status) {
+                        case 'active': return 'bg-success';
+                        case 'warning': return 'bg-warning';
+                        case 'error': return 'bg-destructive';
+                        default: return 'bg-muted';
+                      }
+                    };
+
+                    const getStatusLabel = (status: string) => {
+                      switch (status) {
+                        case 'active': return 'Активен';
+                        case 'warning': return 'Предупреждение';
+                        case 'error': return 'Ошибка';
+                        default: return 'Неизвестно';
+                      }
+                    };
+
+                    return (
+                      <div 
+                        key={source.id} 
+                        className="p-4 rounded-lg border border-border hover:bg-accent/30 transition-colors"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-4 flex-1">
+                            <div className={`w-3 h-3 rounded-full mt-1 ${
+                              source.status === 'active' ? 'animate-pulse' : ''
+                            } ${getStatusColor(source.status)}`} />
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-semibold text-base">{source.name}</h4>
+                                <Badge variant="outline" className="text-xs">
+                                  {source.type}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">{source.url}</p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Icon name="Clock" size={12} />
+                                  {source.lastUpdate}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Icon name="FileText" size={12} />
+                                  {source.todayMentions} сегодня
+                                </span>
+                                <Badge 
+                                  variant={source.status === 'active' ? 'default' : 'destructive'}
+                                  className="text-xs"
+                                >
+                                  {getStatusLabel(source.status)}
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="icon">
+                              <Icon name="Settings" size={16} />
+                            </Button>
+                            <Button variant="ghost" size="icon">
+                              <Icon name="Trash2" size={16} className="text-destructive" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </CardContent>
             </Card>
+
+            {/* Source Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Всего источников</CardDescription>
+                  <CardTitle className="text-3xl font-bold">6</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-success text-sm font-medium">
+                    <Icon name="Database" size={16} />
+                    <span>5 активных</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Проблемных источников</CardDescription>
+                  <CardTitle className="text-3xl font-bold text-warning">1</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-warning text-sm font-medium">
+                    <Icon name="AlertTriangle" size={16} />
+                    <span>Требует внимания</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>Среднее время обновления</CardDescription>
+                  <CardTitle className="text-3xl font-bold">8 мин</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm font-medium">
+                    <Icon name="RefreshCw" size={16} />
+                    <span>Автообновление</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Regional Comparison */}
