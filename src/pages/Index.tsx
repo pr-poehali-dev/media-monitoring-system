@@ -309,7 +309,7 @@ const Index = () => {
                 <Icon name="BarChart3" className="text-primary" size={24} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">Медиамониторинг</h1>
+                <h1 className="text-xl font-bold text-foreground">МедиаРегион.Аналитика</h1>
                 <p className="text-sm text-muted-foreground">Система анализа медиаполя региона</p>
               </div>
             </div>
